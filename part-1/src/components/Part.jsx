@@ -1,18 +1,11 @@
 import React from "react";
 
-function Part({ ...props }) {
-  const { part1, part2, part3, exercise1, exercise2, exercise3 } = props;
+function Part({ part }) {
+  console.log("Inside parts", part);
   return (
     <>
-      <p>
-        {part1} {exercise1}
-      </p>
-      <p>
-        {part2} {exercise2}
-      </p>
-      <p>
-        {part3} {exercise3}
-      </p>
+      <p>Name: {part.name}.</p>
+      <span> Exercises: {part.exercises}.</span>
     </>
   );
 }
