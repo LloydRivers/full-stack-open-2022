@@ -6,11 +6,17 @@ import Total from "./Total";
 const Course = ({ courses }) => {
   return (
     <>
-      <Header name={courses.name} />
-      {courses.parts.map((part) => {
-        return <Part key={part.id} part={part} />;
+      {courses.map((course) => {
+        return (
+          <>
+            <Header name={course.name} />
+            {course.parts.map((part) => {
+              return <Part part={part} />;
+            })}
+            <Total parts={course.parts} />
+          </>
+        );
       })}
-      <Total parts={courses.parts} />
     </>
   );
 };
