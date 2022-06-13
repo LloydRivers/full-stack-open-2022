@@ -1,12 +1,11 @@
 import { useState } from "react";
+import { Filter, PersonForm } from "./components";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState("");
   const [number, setNumber] = useState("");
   const [search, setSearch] = useState("");
-
-  console.log(search);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -20,29 +19,27 @@ const App = () => {
 
     if (isPresent.length) {
       alert(`${newPerson.name} is already added to the phonebook`);
+      setNewName("");
+      setNumber("");
     } else {
-      return setPersons([...persons, newPerson]);
+      setPersons([...persons, newPerson]);
     }
+    setNewName("");
+    setNumber("");
   };
 
   return (
     <div>
       <h2>Phonebook</h2>
-      <div>
-        filter shown with
-        <input onChange={(e) => setSearch(e.target.value)} />
-      </div>
-      <form onSubmit={handleSubmit}>
-        <div>
-          name: <input onChange={(e) => setNewName(e.target.value)} />
-        </div>
-        <div>
-          number: <input onChange={(e) => setNumber(e.target.value)} />
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
+      <Filter setSearch={setSearch} />
+      <PersonForm
+        newName={newName}
+        number={number}
+        setNumber={setNumber}
+        handleSubmit={handleSubmit}
+        setNewName={setNewName}
+      />
+
       <h2>Numbers</h2>
       {persons
         .filter((person) => {
