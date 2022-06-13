@@ -5,12 +5,19 @@ const App = () => {
   const [newName, setNewName] = useState("");
 
   const handleSubmit = (event) => {
-    console.log(persons);
     event.preventDefault();
     const newPerson = {
       name: newName,
     };
-    setPersons(persons.concat(newPerson));
+    const isPresent = persons.filter(
+      (element) => element.name === newPerson.name
+    );
+
+    if (isPresent.length) {
+      alert(`${newPerson.name} is already added to the phonebook`);
+    } else {
+      return setPersons([...persons, newPerson]);
+    }
   };
 
   return (
