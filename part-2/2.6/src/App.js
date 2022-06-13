@@ -1,13 +1,15 @@
 import { useState } from "react";
 
 const App = () => {
-  const [persons, setPersons] = useState([{ name: "Arto Hellas" }]);
+  const [persons, setPersons] = useState([{}]);
   const [newName, setNewName] = useState("");
+  const [number, setNumber] = useState("");
 
   const handleSubmit = (event) => {
     event.preventDefault();
     const newPerson = {
       name: newName,
+      number: number,
     };
     const isPresent = persons.filter(
       (element) => element.name === newPerson.name
@@ -28,12 +30,19 @@ const App = () => {
           name: <input onChange={(e) => setNewName(e.target.value)} />
         </div>
         <div>
+          number: <input onChange={(e) => setNumber(e.target.value)} />
+        </div>
+        <div>
           <button type="submit">add</button>
         </div>
       </form>
       <h2>Numbers</h2>
       {persons.map((person, index) => {
-        return <h3 key={index + 1}>{person.name}</h3>;
+        return (
+          <h3 key={index + 1}>
+            {person.name} {person.number}
+          </h3>
+        );
       })}
     </div>
   );
