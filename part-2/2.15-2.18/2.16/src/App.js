@@ -31,13 +31,28 @@ const App = () => {
       number: number,
     };
     const isPresent = persons.filter(
-      (element) => element.name === newPerson.name
+      (person) => person.name === newPerson.name
     );
 
     if (isPresent.length) {
-      alert(`${newPerson.name} is already added to the phonebook`);
-      setNewName("");
-      setNumber("");
+      console.log(isPresent.length);
+      if (
+        window.confirm(
+          `${newPerson.name} is already added to the phonebook, replace the old number with a new one?`
+        )
+      ) {
+        try {
+          await personServices.updatePerson(isPresent[0].id, newPerson);
+          setReRender(true);
+          setNewName("");
+          setNumber("");
+        } catch (error) {
+          console.log(error);
+        }
+      } else {
+        setNewName("");
+        setNumber("");
+      }
     } else {
       try {
         await personServices.createPerson(newPerson);
@@ -48,8 +63,6 @@ const App = () => {
         console.log(error);
       }
     }
-    setNewName("");
-    setNumber("");
   };
 
   const handleDelete = async (id) => {
