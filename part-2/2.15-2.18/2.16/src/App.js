@@ -52,6 +52,24 @@ const App = () => {
     setNumber("");
   };
 
+  const handleDelete = async (id) => {
+    if (
+      window.confirm(
+        `Delete ${persons.find((person) => person.id === id).name}?`
+      )
+    ) {
+      try {
+        await personServices.deletePerson(id);
+
+        setReRender(true);
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      return;
+    }
+  };
+
   return (
     <div>
       <h2>Phonebook</h2>
@@ -71,9 +89,12 @@ const App = () => {
         })
         .map((person, index) => {
           return (
-            <h3 key={index + 1}>
-              {person.name} {person.number}
-            </h3>
+            <div key={index + 1}>
+              <h3>
+                {person.name} {person.number}
+              </h3>
+              <button onClick={() => handleDelete(person.id)}>Delete</button>
+            </div>
           );
         })}
     </div>
