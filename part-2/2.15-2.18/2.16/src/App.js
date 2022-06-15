@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Filter, PersonForm } from "./components";
-import axios from "axios";
+
+import personServices from "./services/persons";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -11,7 +12,7 @@ const App = () => {
 
   const getData = async () => {
     try {
-      const response = await axios.get("http://localhost:3001/persons");
+      const response = await personServices.getAllPersons();
       setPersons(response.data);
     } catch (error) {
       console.log(error);
@@ -39,7 +40,7 @@ const App = () => {
       setNumber("");
     } else {
       try {
-        await axios.post("http://localhost:3001/persons", newPerson);
+        await personServices.createPerson(newPerson);
         setNewName("");
         setNumber("");
         setReRender(true);
