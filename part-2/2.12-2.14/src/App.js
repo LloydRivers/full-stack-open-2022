@@ -8,6 +8,7 @@ const App = () => {
 
   const [weather, setWeather] = useState(false);
   const [weatherData, setWeatherData] = useState({});
+  console.log(weatherData);
 
   const getLocation = async (lat, lon) => {
     const URL = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}`;
@@ -69,6 +70,12 @@ const App = () => {
             <li>Population: {results[0].population}</li>
             <li>Languages: </li>
             <img width="150px" src={results[0].flags.png} alt="flags" />
+            <br />
+            <img
+              width="200px"
+              src={`http://openweathermap.org/img/wn/${weatherData.weather[0].icon}@2x.png`}
+              alt="icon"
+            />
             <br />
             <h1>Weather in : {results[0].capital}</h1>
           </>
