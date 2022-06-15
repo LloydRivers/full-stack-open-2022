@@ -2,8 +2,22 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 
 const App = () => {
+  const API_KEY = process.env.REACT_APP_API_KEY;
   const [countries, setCountries] = useState([]);
   const [results, setResults] = useState([]);
+
+  const [weather, setWeather] = useState(false);
+  const [weatherData, setWeatherData] = useState({});
+
+  const getLocation = async (lat, lon) => {
+    const URL = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}`;
+    const response = await axios.get(URL);
+    setWeatherData(response.data);
+    setWeather(true);
+
+    try {
+    } catch (error) {}
+  };
 
   useEffect(() => {
     getData();
@@ -12,7 +26,6 @@ const App = () => {
   const getData = async (e) => {
     try {
       const { data } = await axios("https://restcountries.com/v3.1/all");
-
       setCountries(data);
     } catch (error) {
       console.log(error);
@@ -20,8 +33,10 @@ const App = () => {
   };
 
   const onChangeHandler = (name) => {
+    setWeather(false);
+    let filteredResults;
     if (name !== "" && countries.length > 0) {
-      let filteredResults = countries.filter((c) =>
+      filteredResults = countries.filter((c) =>
         c.name.common.toLowerCase().includes(name.toLowerCase())
       );
 
@@ -30,6 +45,15 @@ const App = () => {
       }
     } else {
       setResults([]);
+    }
+
+    if (filteredResults.length === 1) {
+      const coOrdinates = {
+        lat: filteredResults[0].latlng[0],
+        lon: filteredResults[0].latlng[1],
+      };
+
+      getLocation(coOrdinates.lat, coOrdinates.lon);
     }
   };
 
@@ -45,6 +69,8 @@ const App = () => {
             <li>Population: {results[0].population}</li>
             <li>Languages: </li>
             <img width="150px" src={results[0].flags.png} alt="flags" />
+            <br />
+            <h1>Weather in : {results[0].capital}</h1>
           </>
         ) : results.length <= 10 && results.length ? (
           results.map((i) => (
@@ -59,6 +85,14 @@ const App = () => {
           <p>Please fine tune your search</p>
         )}
       </ul>
+      {weather && (
+        <div>
+          <h2>
+            temperature {(weatherData.main.temp - 273.15).toFixed(1)} celcius{" "}
+          </h2>
+          <h2>{weatherData.wind.speed}m/s</h2>
+        </div>
+      )}
     </div>
   );
 };
