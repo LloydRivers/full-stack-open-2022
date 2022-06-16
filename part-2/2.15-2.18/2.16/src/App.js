@@ -27,12 +27,12 @@ const App = () => {
   }, [reRender]);
 
   const handleSubmit = async (event) => {
+    event.preventDefault();
     setIsAdded(true);
     setTimeout(() => {
       setIsAdded(false);
       setAddedPersonsName("");
     }, 4000);
-    event.preventDefault();
     const newPerson = {
       name: newName,
       number: number,
@@ -75,7 +75,9 @@ const App = () => {
 
   const handleDelete = async (id) => {
     if (
-      window.confirm(`Delete ${persons.find((person) => person.id === id)}?`)
+      window.confirm(
+        `Delete ${persons.find((person) => person.id === id).name}?`
+      )
     ) {
       try {
         await personServices.deletePerson(id);
