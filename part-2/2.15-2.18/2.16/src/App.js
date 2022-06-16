@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Filter, PersonForm } from "./components";
+import { Filter, PersonForm, Notification } from "./components";
 
 import personServices from "./services/persons";
 
@@ -9,7 +9,9 @@ const App = () => {
   const [number, setNumber] = useState("");
   const [search, setSearch] = useState("");
   const [reRender, setReRender] = useState(false);
-
+  const [isAdded, setIsAdded] = useState(false);
+  const [addedPersonsName, setAddedPersonsName] = useState("");
+  const [errorMessage, setErrorMessage] = useState(null);
   const getData = async () => {
     try {
       const response = await personServices.getAllPersons();
@@ -25,28 +27,33 @@ const App = () => {
   }, [reRender]);
 
   const handleSubmit = async (event) => {
+    setIsAdded(true);
+    setTimeout(() => {
+      setIsAdded(false);
+      setAddedPersonsName("");
+    }, 4000);
     event.preventDefault();
     const newPerson = {
       name: newName,
       number: number,
     };
-    const isPresent = persons.filter(
-      (person) => person.name === newPerson.name
-    );
+    const isPresent = persons.find((person) => person.name === newPerson.name);
 
-    if (isPresent.length) {
-      console.log(isPresent.length);
+    if (isPresent) {
       if (
         window.confirm(
           `${newPerson.name} is already added to the phonebook, replace the old number with a new one?`
         )
       ) {
         try {
-          await personServices.updatePerson(isPresent[0].id, newPerson);
+          await personServices.updatePerson(isPresent.id, newPerson);
           setReRender(true);
           setNewName("");
           setNumber("");
         } catch (error) {
+          setErrorMessage(
+            `Person '${newPerson.name}' was already removed from server`
+          );
           console.log(error);
         }
       } else {
@@ -56,6 +63,7 @@ const App = () => {
     } else {
       try {
         await personServices.createPerson(newPerson);
+        setAddedPersonsName(newPerson.name);
         setNewName("");
         setNumber("");
         setReRender(true);
@@ -67,9 +75,7 @@ const App = () => {
 
   const handleDelete = async (id) => {
     if (
-      window.confirm(
-        `Delete ${persons.find((person) => person.id === id).name}?`
-      )
+      window.confirm(`Delete ${persons.find((person) => person.id === id)}?`)
     ) {
       try {
         await personServices.deletePerson(id);
@@ -85,7 +91,20 @@ const App = () => {
 
   return (
     <div>
-      <h2>Phonebook</h2>
+      <h1>Phonebook</h1>
+      <Notification message={errorMessage} />
+      {isAdded && (
+        <p
+          style={{
+            color: "#fff",
+            fontSize: "1.1rem",
+            border: "1px solid #3A9438",
+            backgroundColor: "grey",
+          }}
+        >
+          Added {addedPersonsName} to the phonebook
+        </p>
+      )}
       <Filter setSearch={setSearch} />
       <PersonForm
         newName={newName}
