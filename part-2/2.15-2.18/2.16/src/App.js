@@ -21,6 +21,9 @@ const App = () => {
     }
   };
 
+  // 1 it runs on page load
+  // 2 it runs on state change
+
   useEffect(() => {
     getData();
     setReRender(false);
